@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            background-color: antiquewhite;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #edd390;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #e1c16f;
+        }
+
+        .error-message,
+        .logout-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .logout-message {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        a {
+            color: #dcc362;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        span {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div th:if="${param.error}">
+                <div class="error-message">
+                    <p>Vigane kasutajatunnus või parool</p>
+                </div>
+            </div>
+
+            <div th:if="${param.logout}">
+                <div class="logout-message">
+                    <p>Välja logimine õnnestus!</p>
+                </div>
+            </div>  
+            
+            <h2>Login</h2>
+            <form
+                method="post"
+                role="form"
+                th:action="@{/login}"
+                th:object="${user}"
+            >
+                <div class="form-group">
+                    <label for="username">Kasutajatunnus</label>
+                    <input th:field="*{username}" type="text" id="username" name="username" placeholder="Sisesta oma kasutajatunnus" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Parool</label>
+                    <input th:field="*{password}" type="password" id="password" name="password" placeholder="Sisesta oma parool" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <span>Registreeri ennast siin: <a th:href="@{/register}">Registeeri</a></span>
+        </div>
+    </div>
+</body>
+</html>

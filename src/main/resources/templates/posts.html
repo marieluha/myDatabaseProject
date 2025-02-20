@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts</title>
+    <style>
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+    background-color: antiquewhite;
+}
+
+header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.header-left {
+    display: flex;
+    gap: 20px; 
+    justify-content: center; 
+    flex-grow: 1;
+    margin-left: 70px;
+
+}
+
+
+
+.header-link {
+  color: white;
+  text-decoration: none; 
+  font-size: 16px;
+  margin: 0 15px;
+  padding: 5px 0; 
+  transition: border-bottom 0.3s ease; 
+}
+
+.header-link:hover {
+  border-bottom: 2px solid white; 
+}
+
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+.post {
+
+    border: 1px solid #333;  
+    padding: 10px;
+    margin-bottom: 15px;  
+    border-radius: 8px;  
+    background-color: #f9f9f9;  
+    margin-left: 300px;
+    margin-right: 300px;
+}
+
+.post-header {
+    font-weight: bold;  
+    font-size: 26px; 
+    margin-bottom: 5px;  
+}
+
+.post-content {
+    font-size: 20px; 
+    margin-bottom: 5px;  
+}
+
+.post-footer {
+    display: flex;
+    justify-content: flex-end;  
+    font-size: 16px;  
+    color: #6e6e6e;  
+}
+
+.post-footer span {
+    padding-left: 20px;  
+}
+ul {
+    list-style-type: none;  
+    padding: 0; 
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+
+
+.ulemine {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px;
+    margin-top: 15px;  
+    margin-bottom: 15px;  
+    border-radius: 8px;  
+}
+
+
+h1 {
+    text-align: center; 
+    margin: 0; 
+    flex-grow: 1; 
+    margin-left: 400px;
+}
+
+
+#addPostButton {
+    padding: 10px 20px;
+    background-color: #333; 
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 300px;
+    border-radius: 8px;
+}
+
+#addPostButton:hover {
+    background-color: #646464; 
+}
+
+
+    </style>
+
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <a href="/home" class="header-link">Home</a>
+            <a href="/posts" class="header-link">Posts</a>
+            <a href="/games" class="header-link">Games</a>
+            
+        </div>
+        <div class="header-right">
+            <span sec:authorize="isAuthenticated">
+                <a th:href="@{/logout}" class="header-link">
+                    Log out
+                </a>
+            </span>
+        </div>
+    </header>
+
+    
+    <div class="ulemine">
+        <h1>Kõik postitused</h1>
+        <button id="addPostButton">Lisa postitus</button>
+    </div>
+
+
+    <div id="addPostModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h2>Lisa postitus</h2>
+            <form th:action="@{/posts}" method="post">
+                <textarea name="content" placeholder="Kirjuta oma postitus siia..." required rows="10" cols="50"></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <ul>
+        <li th:each="post : ${posts}" class="post">
+            <div class="post-header">
+                <strong th:text="${post.user.username}"></strong> 
+            </div>
+            <div class="post-content">
+                <p th:text="${post.content}"></p> 
+            </div>
+            <div class="post-footer">
+                <!--<small th:text="${post.createdAt}"></small>-->
+                <small th:text="${post.formattedDate}"></small>
+            </div>
+        </li>
+    </ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("addPostModal");
+            const openButton = document.getElementById("addPostButton");
+            const closeButton = document.getElementById("closeModal");
+    
+            openButton.addEventListener("click", function () {
+                modal.style.display = "flex";
+            });
+    
+            closeButton.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+    
+            window.addEventListener("click", function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

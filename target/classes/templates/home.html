@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {    
+    background-image: url("/images/taust.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.header-left {
+    display: flex;
+    gap: 20px; 
+    justify-content: center; 
+    flex-grow: 1; 
+    margin-left: 70px;
+}
+
+.dashboard {
+    display: flex;
+    gap: 20px; 
+    justify-content: center;
+}
+
+
+#demo {
+    font-family: 'Times New Roman', serif;
+    font-size: 50px;                 
+    font-weight: bold;               
+    color: #333;                  
+    text-align: center;
+    margin-top: 30px;              
+}
+
+
+.header-link {
+  color: white;
+  text-decoration: none; 
+  font-size: 16px;
+  margin: 0 15px;
+  padding: 5px 0; 
+  transition: border-bottom 0.3s ease; 
+}
+
+.header-link:hover {
+  border-bottom: 2px solid white; 
+}
+
+.dashboard {
+    
+    border-radius: 10px;    
+    padding: 20px;          
+    margin: 10px;           
+    height: 90vh;
+    display: flex;            
+    display: flex;          
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: center;
+    
+
+}
+
+
+
+@media (max-width: 600px) {
+    .dashboard {
+        padding: 10px;       
+        border-radius: 5px;  
+    }
+}
+
+
+.clock {
+    width: 200px;
+    height: 200px;
+    border: 10px solid black;
+    border-radius: 50%;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    background: white;
+    margin-top: 20px;
+}
+
+.clock-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform: translateY(-3px); 
+}
+
+.hand {
+    border-radius: 5px;
+    width: 50%;
+    background: black;
+    position: absolute;
+    top: 50%;
+    transform-origin: 100%;
+    transform: rotate(90deg);
+    transition: all 0.05s;
+    transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+}
+
+.hour-hand {
+    height: 6px;
+    
+}
+
+.minute-hand {
+    height: 4px;
+    
+}
+
+.second-hand {
+    height: 2px;
+    
+}
+
+#date {
+    font-size: 20px;
+    font-family: 'Times New Roman', serif;
+    margin-top: 10px;
+    color: #333;
+}
+
+
+
+
+
+    </style>
+
+</head>
+<body>
+
+
+    <header>
+        <div class="header-left">
+            <a href="/home" class="header-link">Home</a>
+            <a href="/posts" class="header-link">Posts</a>
+            <a href="/games" class="header-link">Games</a>
+        </div>
+        <div class="header-right">
+            <span sec:authorize="isAuthenticated">
+                <a th:href="@{/logout}" class="header-link">
+                    Log out
+                </a>
+            </span>
+        </div>
+    </header>
+    
+
+
+    <div class="dashboard">
+        
+        <div class="clock">
+            <div class="clock-face">
+                <div class="hand hour-hand"></div>
+                <div class="hand minute-hand"></div>
+                <div class="hand second-hand"></div>
+            </div>
+        </div>
+
+
+        <h1 id="demo"></h1>
+        <span id="username" th:text="${userdetail.fullname}" style="display: none;">User's Name</span>
+
+        <p id="date"></p>
+    </div>
+
+
+<script>
+    const hourHand = document.querySelector('.hour-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const secondHand = document.querySelector('.second-hand');
+
+    function setDate() {
+        const now = new Date();
+
+        const seconds = now.getSeconds();
+        const secondsDegrees = ((seconds / 60) * 360) + 90;
+        secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+        const minutes = now.getMinutes();
+        const minutesDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6) + 90;
+        minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+
+        const hours = now.getHours();
+        const hoursDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30) + 90;
+        hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
+
+    setDate();
+
+    
+
+    function displayDate() {
+        const now = new Date();
+
+        const daysOfWeek = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede","laupäev"];
+        const monthsOfYear = ["jaanuar", "veebruar", "märts", "aprill",  "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+
+        const dayOfWeek = daysOfWeek[now.getDay()]; 
+        const day = now.getDate();
+        const month = monthsOfYear[now.getMonth()]; 
+
+        
+        const formattedDate = `${dayOfWeek}, ${day}. ${month}`;
+
+        
+        document.getElementById("date").innerText = formattedDate;
+    }
+
+
+
+    var i = 0;
+    var username = document.getElementById("username").innerText;
+
+
+    var now = new Date();
+    var hour = now.getHours();
+    var greeting;
+    var txt;
+
+    if (hour >= 5 && hour < 12) {
+        greeting = "Tere hommikust, ";
+        var txt = greeting + username + "!";
+    } else if (hour >= 12 && hour < 17) {
+        greeting = "Ilusat pärastlõunat, ";
+        var txt = greeting + username + "!";
+    } else if (hour >= 17 && hour < 23) {
+        greeting = "Kaunist õhtut, ";
+        var txt = greeting + username + "!";
+    } else {
+        greeting = ", öö on. Mine tuttu!";
+        var txt = username + greeting;
+    }
+
+    var speed = 50; 
+
+    function typeWriter() {
+        if (i < txt.length) {
+            document.getElementById("demo").innerHTML += txt.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+    }
+
+    // tying
+    window.onload = function() {
+        displayDate();
+        typeWriter();
+    };
+</script>
+</body>
+</html>
